@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 
@@ -10,9 +10,23 @@ export default function NovoJogadorPage() {
     name: '',
     nickname: '',
     city: '',
-    notes: ''
+    notes: '',
+    team_id: ''
   })
+  const [teams, setTeams] = useState([])
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    loadTeams()
+  }, [])
+
+  async function loadTeams() {
+    const { data } = await supabase
+      .from('teams')
+      .select('*')
+      .order('name')
+    setTeams(data || [])
+  }
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -26,20 +40,41 @@ export default function NovoJogadorPage() {
     }
 
     setSaving(true)
-    const { error } = await supabase.from('players').insert({
-      name: form.name.trim(),
-      nickname: form.nickname.trim() || null,
-      city: form.city.trim() || null,
-      notes: form.notes.trim() || null
-    })
 
-    setSaving(false)
+    // 1. Criar o jogador
+    const { data: player, error } = await supabase
+      .from('players')
+      .insert({
+        name: form.name.trim(),
+        nickname: form.nickname.trim() || null,
+        city: form.city.trim() || null,
+        notes: form.notes.trim() || null
+      })
+      .select()
+      .single()
 
     if (error) {
-      alert('Erro ao guardar: ' + error.message)
-    } else {
-      router.push('/jogadores')
+      setSaving(false)
+      alert('Erro ao guardar jogador: ' + error.message)
+      return
     }
+
+    // 2. Se escolheu equipa, associar
+    if (form.team_id && player) {
+      const { error: linkError } = await supabase.from('team_players').insert({
+        player_id: player.id,
+        team_id: form.team_id,
+        joined_at: new Date().toISOString().slice(0, 10),
+        is_active: true
+      })
+
+      if (linkError) {
+        alert('Jogador criado, mas erro ao associar equipa: ' + linkError.message)
+      }
+    }
+
+    setSaving(false)
+    router.push(`/jogadores/${player.id}`)
   }
 
   return (
@@ -76,6 +111,21 @@ export default function NovoJogadorPage() {
             onChange={handleChange}
             placeholder="Ex: Lisboa, Porto, Leiria..."
           />
+        </div>
+
+        <div className="form-group">
+          <label>Equipa (opcional)</label>
+          <select
+            name="team_id"
+            value={form.team_id}
+            onChange={handleChange}
+            style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '1rem' }}
+          >
+            <option value="">Sem equipa</option>
+            {teams.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">
