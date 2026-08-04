@@ -5,8 +5,11 @@ import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '../../../../../../lib/supabase'
 
 export default function EditarHistoricoPage() {
-  const { id, linkId } = useParams()
+  const params = useParams()
   const router = useRouter()
+  const id = params.id
+  const linkId = params.linkId
+
   const [link, setLink] = useState(null)
   const [form, setForm] = useState({
     joined_at: '',
@@ -17,7 +20,12 @@ export default function EditarHistoricoPage() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    if (linkId) loadLink()
+    if (linkId) {
+      loadLink()
+    } else {
+      alert('ID do registo em falta (linkId). Verifica a estrutura das pastas no GitHub.')
+      router.push(`/jogadores/${id || ''}`)
+    }
   }, [linkId])
 
   async function loadLink() {
@@ -28,7 +36,11 @@ export default function EditarHistoricoPage() {
       .single()
 
     if (error || !data) {
-      alert('Registo não encontrado')
+      alert(
+        'Registo não encontrado.\n' +
+        'linkId: ' + linkId + '\n' +
+        (error ? 'Erro: ' + error.message : 'Sem dados')
+      )
       router.push(`/jogadores/${id}`)
       return
     }
@@ -60,7 +72,6 @@ export default function EditarHistoricoPage() {
       is_active: form.is_active
     }
 
-    // Se está a marcar como ativo, a data de saída deve ficar vazia
     if (form.is_active) {
       payload.left_at = null
     }
@@ -73,7 +84,6 @@ export default function EditarHistoricoPage() {
     setSaving(false)
 
     if (error) {
-      // Erro comum: já existe outra associação ativa
       if (error.message.includes('team_players_one_active_per_player')) {
         alert('Este jogador já tem outra equipa ativa. Fecha primeiro a outra associação.')
       } else {
