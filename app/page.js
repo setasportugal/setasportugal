@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import StatCard from '@/components/ui/StatCard'
+import StatCard from '../components/ui/StatCard'
 
 export default function Home() {
   return (
