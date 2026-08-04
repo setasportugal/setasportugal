@@ -46,6 +46,21 @@ export default function JogadorDetalhePage() {
     }
   }
 
+  async function deleteLink(linkId) {
+    if (!confirm('Apagar este registo do histórico?')) return
+
+    const { error } = await supabase
+      .from('team_players')
+      .delete()
+      .eq('id', linkId)
+
+    if (error) {
+      alert('Erro: ' + error.message)
+    } else {
+      loadData()
+    }
+  }
+
   const activeLink = links.find(l => l.is_active)
 
   if (loading) return <p className="empty">A carregar...</p>
@@ -99,8 +114,8 @@ export default function JogadorDetalhePage() {
         ) : (
           <div style={{ marginTop: 8 }}>
             {links.map(link => (
-              <div key={link.id} className="list-item">
-                <div>
+              <div key={link.id} className="list-item" style={{ alignItems: 'flex-start' }}>
+                <div style={{ flex: 1 }}>
                   <a href={`/equipas/${link.team_id}`}>
                     <strong>{link.teams?.name}</strong>
                   </a>
@@ -114,6 +129,22 @@ export default function JogadorDetalhePage() {
                     {link.left_at ? ` até ${link.left_at}` : link.is_active ? ' → presente' : ''}
                   </div>
                 </div>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <a
+                    href={`/jogadores/\( {id}/historico/ \){link.id}/editar`}
+                    className="btn btn-secondary"
+                    style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  >
+                    Editar
+                  </a>
+                  <button
+                    onClick={() => deleteLink(link.id)}
+                    className="btn btn-danger"
+                    style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  >
+                    Apagar
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -125,4 +156,4 @@ export default function JogadorDetalhePage() {
       </div>
     </div>
   )
-          }
+    }
