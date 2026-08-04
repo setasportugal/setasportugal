@@ -1,18 +1,22 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 
 export default function JogadorDetalhePage() {
   const { id } = useParams()
   const router = useRouter()
+
   const [player, setPlayer] = useState(null)
   const [links, setLinks] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (id) loadData()
+    if (id) {
+      loadData()
+    }
   }, [id])
 
   async function loadData() {
@@ -26,7 +30,10 @@ export default function JogadorDetalhePage() {
 
     const { data: linksData } = await supabase
       .from('team_players')
-      .select('*, teams(*)')
+      .select(`
+        *,
+        teams(*)
+      `)
       .eq('player_id', id)
       .order('joined_at', { ascending: false })
 
@@ -38,12 +45,17 @@ export default function JogadorDetalhePage() {
   async function deletePlayer() {
     if (!confirm('Apagar este jogador permanentemente?')) return
 
-    const { error } = await supabase.from('players').delete().eq('id', id)
+    const { error } = await supabase
+      .from('players')
+      .delete()
+      .eq('id', id)
+
     if (error) {
-      alert('Erro: ' + error.message)
-    } else {
-      router.push('/jogadores')
+      alert(error.message)
+      return
     }
+
+    router.push('/jogadores')
   }
 
   async function deleteLink(linkId) {
@@ -55,111 +67,372 @@ export default function JogadorDetalhePage() {
       .eq('id', linkId)
 
     if (error) {
-      alert('Erro: ' + error.message)
-    } else {
-      loadData()
+      alert(error.message)
+      return
     }
+
+    loadData()
   }
 
-  const activeLink = links.find(l => l.is_active)
+  const activeLink = links.find(link => link.is_active)
 
-  if (loading) return <p className="empty">A carregar...</p>
-  if (!player) return <p className="empty">Jogador não encontrado.</p>
+  if (loading) {
+    return <p className="empty">A carregar...</p>
+  }
+
+  if (!player) {
+    return <p className="empty">Jogador não encontrado.</p>
+  }
 
   return (
-    <div style={{ marginTop: 16 }}>
-      <div className="card">
-        <h2>{player.name}</h2>
-        {player.nickname && (
-          <p style={{ color: '#64748b' }}>“{player.nickname}”</p>
-        )}
-        {player.city && (
-          <p style={{ marginTop: 4, fontSize: '0.9rem' }}>📍 {player.city}</p>
-        )}
-        {player.notes && (
-          <p style={{ marginTop: 12, color: '#475569', whiteSpace: 'pre-wrap' }}>
-            {player.notes}
-          </p>
-        )}
+    <div style={{ marginTop: 20 }}>
 
-        <div style={{ marginTop: 12, padding: '10px 12px', background: '#f1f5f9', borderRadius: 8 }}>
-          <strong style={{ fontSize: '0.85rem', color: '#475569' }}>Equipa atual:</strong>
-          <div style={{ marginTop: 4 }}>
-            {activeLink ? (
-              <a href={`/equipas/${activeLink.team_id}`}>
-                <strong>{activeLink.teams?.name}</strong>
-              </a>
-            ) : (
-              <span style={{ color: '#94a3b8' }}>Sem equipa (livre)</span>
+      <div
+        className="card"
+        style={{
+          padding: 24
+        }}
+      >
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: 20,
+            flexWrap: 'wrap'
+          }}
+        >
+
+          <div>
+
+            <h1
+              style={{
+                margin: 0
+              }}
+            >
+              👤 {player.name}
+            </h1>
+
+            {player.nickname && (
+              <p
+                style={{
+                  color: '#64748b',
+                  marginTop: 6,
+                  fontSize: '1.1rem'
+                }}
+              >
+                "{player.nickname}"
+              </p>
             )}
+
+            {player.city && (
+              <p
+                style={{
+                  marginTop: 10
+                }}
+              >
+                📍 {player.city}
+              </p>
+            )}
+
           </div>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: 10,
+              flexWrap: 'wrap'
+            }}
+          >
+
+            <Link
+              href={`/jogadores/${id}/editar`}
+              className="btn"
+            >
+              Editar
+            </Link>
+
+            <Link
+              href={`/jogadores/${id}/transferir`}
+              className="btn btn-secondary"
+            >
+              Transferir
+            </Link>
+
+            <button
+              onClick={deletePlayer}
+              className="btn btn-danger"
+            >
+              Apagar
+            </button>
+
+          </div>
+
         </div>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr',
+            gap: 24,
+            marginTop: 30
+          }}
+        >
 
-        <div className="actions">
-          <a href={`/jogadores/${id}/editar`} className="btn">Editar</a>
-          <a href={`/jogadores/${id}/transferir`} className="btn btn-secondary">
-            Transferir
-          </a>
-          <button onClick={deletePlayer} className="btn btn-danger">Apagar</button>
-        </div>
-      </div>
+          <div className="card">
 
-      <div className="card" style={{ marginTop: 16 }}>
-        <h3>Histórico de equipas</h3>
+            <h2>Informação</h2>
 
-        {links.length === 0 ? (
-          <p style={{ color: '#94a3b8', marginTop: 8 }}>
-            Ainda sem histórico de equipas.
-          </p>
-        ) : (
-          <div style={{ marginTop: 8 }}>
-            {links.map(link => (
-              <div key={link.id} className="list-item" style={{ alignItems: 'flex-start' }}>
-                <div style={{ flex: 1 }}>
-                  <a href={`/equipas/${link.team_id}`}>
-                    <strong>{link.teams?.name}</strong>
-                  </a>
-                  {link.is_active && (
-                    <span className="badge badge-active" style={{ marginLeft: 8 }}>
-                      Atual
-                    </span>
-                  )}
-                  <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: 2 }}>
-                    {link.joined_at ? `Desde ${link.joined_at}` : ''}
-                    {link.left_at ? ` até ${link.left_at}` : link.is_active ? ' → presente' : ''}
+            <div
+              style={{
+                display: 'grid',
+                gap: 16,
+                marginTop: 20
+              }}
+            >
+
+              <div>
+                <strong>Nome</strong>
+                <div>{player.name}</div>
+              </div>
+
+              {player.nickname && (
+                <div>
+                  <strong>Nickname</strong>
+                  <div>{player.nickname}</div>
+                </div>
+              )}
+
+              {player.city && (
+                <div>
+                  <strong>Cidade</strong>
+                  <div>{player.city}</div>
+                </div>
+              )}
+
+              {player.notes && (
+                <div>
+                  <strong>Notas</strong>
+
+                  <div
+                    style={{
+                      marginTop: 8,
+                      whiteSpace: 'pre-wrap',
+                      color: '#475569'
+                    }}
+                  >
+                    {player.notes}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  <a
-  href={
-    "/jogadores/" +
-    id +
-    "/historico/" +
-    link.id +
-    "/editar"
-  }
-  className="btn btn-secondary"
-  style={{ padding: '6px 10px', fontSize: '0.8rem' }}
->
-  Editar
-</a>
-                  <button
-                    onClick={() => deleteLink(link.id)}
-                    className="btn btn-danger"
-                    style={{ padding: '6px 10px', fontSize: '0.8rem' }}
-                  >
-                    Apagar
-                  </button>
-                </div>
-              </div>
-            ))}
+              )}
+
+            </div>
+
           </div>
-        )}
+
+          <div className="card">
+
+            <h2>Equipa Atual</h2>
+
+            <div
+              style={{
+                marginTop: 20
+              }}
+            >
+
+              {activeLink ? (
+
+                <>
+
+                  <Link
+                    href={`/equipas/${activeLink.team_id}`}
+                    style={{
+                      fontSize: '1.2rem',
+                      fontWeight: 700,
+                      textDecoration: 'none'
+                    }}
+                  >
+                    🛡️ {activeLink.teams?.name}
+                  </Link>
+
+                  <div
+                    style={{
+                      marginTop: 12,
+                      color: '#64748b'
+                    }}
+                  >
+                    Desde{' '}
+                    {activeLink.joined_at || '-'}
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 12
+                    }}
+                  >
+                    <span className="badge badge-active">
+                      Jogador Ativo
+                    </span>
+                  </div>
+
+                </>
+
+              ) : (
+
+                <div
+                  style={{
+                    color: '#94a3b8'
+                  }}
+                >
+                  Jogador sem equipa.
+                </div>
+
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+        <div
+          className="card"
+          style={{
+            marginTop: 24
+          }}
+        >
+          <h2>Histórico de Equipas</h2>
+
+          {links.length === 0 ? (
+
+            <p
+              style={{
+                marginTop: 20,
+                color: '#94a3b8'
+              }}
+            >
+              Ainda não existe histórico de equipas.
+            </p>
+
+          ) : (
+
+            <div
+              style={{
+                marginTop: 20,
+                display: 'grid',
+                gap: 14
+              }}
+            >
+
+              {links.map(link => (
+
+                <div
+                  key={link.id}
+                  style={{
+                    border: '1px solid #e2e8f0',
+                    borderRadius: 12,
+                    padding: 18,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 20,
+                    flexWrap: 'wrap'
+                  }}
+                >
+
+                  <div>
+
+                    <Link
+                      href={`/equipas/${link.team_id}`}
+                      style={{
+                        fontSize: '1.05rem',
+                        fontWeight: 700,
+                        textDecoration: 'none'
+                      }}
+                    >
+                      🛡️ {link.teams?.name}
+                    </Link>
+
+                    <div
+                      style={{
+                        marginTop: 8,
+                        color: '#64748b',
+                        fontSize: '.9rem'
+                      }}
+                    >
+                      {link.joined_at
+                        ? `Desde ${link.joined_at}`
+                        : ''}
+
+                      {link.left_at
+                        ? ` até ${link.left_at}`
+                        : link.is_active
+                        ? ' • Atual'
+                        : ''}
+                    </div>
+
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 8
+                    }}
+                  >
+
+                    <Link
+                      href={`/jogadores/${id}/historico/${link.id}/editar`}
+                      className="btn btn-secondary"
+                    >
+                      Editar
+                    </Link>
+
+                    <button
+                      onClick={() => deleteLink(link.id)}
+                      className="btn btn-danger"
+                    >
+                      Apagar
+                    </button>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          )}
+
+        </div>
+      <div
+        style={{
+          marginTop: 24,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}
+      >
+
+        <Link
+          href="/jogadores"
+          className="btn btn-secondary"
+        >
+          ← Voltar aos Jogadores
+        </Link>
+
+        <div
+          style={{
+            color: '#94a3b8',
+            fontSize: '.85rem'
+          }}
+        >
+          ID do Jogador: {player.id}
+        </div>
+
       </div>
 
-      <div style={{ marginTop: 16 }}>
-        <a href="/jogadores">← Voltar aos jogadores</a>
-      </div>
     </div>
   )
-              }
+}
