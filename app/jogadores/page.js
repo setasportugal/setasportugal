@@ -307,16 +307,13 @@ export default function JogadoresPage() {
 
           </div>
 
-        )}
+                )}
 
       </div>
 
-
-      <div
-        style={{
-          marginTop: 0
-        }}
-      >
+    </div>
+  )
+}
 
         <Link
           href="/"
