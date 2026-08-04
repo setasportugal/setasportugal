@@ -2,6 +2,7 @@
    SETAS PORTUGAL UI
 ========================= */
 
+@import "../styles/variables.css";
 .page-header{
   display:flex;
   justify-content:space-between;
