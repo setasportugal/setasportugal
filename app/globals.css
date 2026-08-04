@@ -3,6 +3,7 @@
 ========================= */
 
 @import "../styles/variables.css";
+@import "../styles/layout.css";
 .page-header{
   display:flex;
   justify-content:space-between;
