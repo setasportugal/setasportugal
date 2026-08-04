@@ -335,7 +335,13 @@ export default function JogadorDetalhePage() {
             marginTop: 24
           }}
         >
-          <h2>Histórico de Equipas</h2>
+          <h2
+  style={{
+    marginBottom: 24
+  }}
+>
+  Histórico de Equipas
+</h2>
 
           {links.length === 0 ? (
 
@@ -351,27 +357,30 @@ export default function JogadorDetalhePage() {
           ) : (
 
             <div
-              style={{
-                marginTop: 20,
-                display: 'grid',
-                gap: 14
-              }}
-            >
+  style={{
+    marginTop: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16
+  }}
+>
 
               {links.map(link => (
 
                 <div
                   key={link.id}
                   style={{
-                    border: '1px solid #e2e8f0',
-                    borderRadius: 12,
-                    padding: 18,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: 20,
-                    flexWrap: 'wrap'
-                  }}
+  border: '1px solid #e2e8f0',
+  borderLeft: '5px solid #2563eb',
+  background: '#ffffff',
+  borderRadius: 14,
+  padding: 20,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  gap: 20,
+  transition: '.2s'
+}}
                 >
 
                   <div>
@@ -384,7 +393,7 @@ export default function JogadorDetalhePage() {
                         textDecoration: 'none'
                       }}
                     >
-                      🛡️ {link.teams?.name}
+                      🛡️ {link.teams?.name || 'Sem equipa'}
                     </Link>
 
                     <div
@@ -394,15 +403,15 @@ export default function JogadorDetalhePage() {
                         fontSize: '.9rem'
                       }}
                     >
-                      {link.joined_at
-                        ? `Desde ${link.joined_at}`
-                        : ''}
+                      <strong>Entrada:</strong> {link.joined_at || '-'}
 
-                      {link.left_at
-                        ? ` até ${link.left_at}`
-                        : link.is_active
-                        ? ' • Atual'
-                        : ''}
+                      <br />
+
+<strong>Saída:</strong>{' '}
+
+{link.left_at
+  ? link.left_at
+  : 'Atual'}
                     </div>
 
                   </div>
