@@ -1,4 +1,5 @@
 import './globals.css'
+import AuthGuard from '../components/AuthGuard'
 
 export const metadata = {
   title: 'Setas DB - Pessoal',
@@ -19,9 +20,13 @@ export default function RootLayout({ children }) {
             </nav>
           </div>
         </header>
+
         <main className="container">
-          {children}
+          <AuthGuard>
+            {children}
+          </AuthGuard>
         </main>
+
       </body>
     </html>
   )
