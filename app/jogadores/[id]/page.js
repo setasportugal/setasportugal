@@ -294,6 +294,7 @@ export default function JogadorDetalhePage() {
           </div>
 
         </div>
+        </div>
         <div
           className="card"
           style={{
