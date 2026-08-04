@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import StatCard from '../components/ui/StatCard'
 import { getDashboardStats } from '../lib/db/dashboard'
+import { getLatestPlayers } from '../lib/db/players'
 
 export default async function Home() {
   const stats = await getDashboardStats()
