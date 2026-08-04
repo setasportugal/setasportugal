@@ -1,26 +1,23 @@
 export default function PageHeader({
-  icon,
   title,
   description,
-  actions
+  children,
 }) {
   return (
     <div className="page-header">
-
       <div>
+        <h1>{title}</h1>
 
-        <h1>
-          {icon} {title}
-        </h1>
-
-        <p>
-          {description}
-        </p>
-
+        {description && (
+          <p>{description}</p>
+        )}
       </div>
 
-      {actions}
-
+      {children && (
+        <div>
+          {children}
+        </div>
+      )}
     </div>
   )
 }
