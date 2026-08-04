@@ -114,39 +114,41 @@ export default function JogadorDetalhePage() {
         ) : (
           <div style={{ marginTop: 8 }}>
             {links.map(link => (
-  <div key={link.id} className="list-item" style={{ alignItems: 'flex-start' }}>
-    <div style={{ flex: 1 }}>
-      <a href={`/equipas/${link.team_id}`}>
-        <strong>{link.teams?.name}</strong>
-      </a>
-      {link.is_active && (
-        <span className="badge badge-active" style={{ marginLeft: 8 }}>
-          Atual
-        </span>
-      )}
-      <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: 2 }}>
-        {link.joined_at ? `Desde ${link.joined_at}` : ''}
-        {link.left_at ? ` até ${link.left_at}` : link.is_active ? ' → presente' : ''}
-      </div>
-    </div>
-    <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-      <a
-        href={`/jogadores/\( {id}/historico/ \){link.id}/editar`}
-        className="btn btn-secondary"
-        style={{ padding: '6px 10px', fontSize: '0.8rem' }}
-      >
-        Editar
-      </a>
-      <button
-        onClick={() => deleteLink(link.id)}
-        className="btn btn-danger"
-        style={{ padding: '6px 10px', fontSize: '0.8rem' }}
-      >
-        Apagar
-      </button>
-    </div>
-  </div>
-))}
+              <div key={link.id} className="list-item" style={{ alignItems: 'flex-start' }}>
+                <div style={{ flex: 1 }}>
+                  <a href={`/equipas/${link.team_id}`}>
+                    <strong>{link.teams?.name}</strong>
+                  </a>
+                  {link.is_active && (
+                    <span className="badge badge-active" style={{ marginLeft: 8 }}>
+                      Atual
+                    </span>
+                  )}
+                  <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: 2 }}>
+                    {link.joined_at ? `Desde ${link.joined_at}` : ''}
+                    {link.left_at ? ` até ${link.left_at}` : link.is_active ? ' → presente' : ''}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <a
+                    href={`/jogadores/\( {id}/historico/ \){link.id}/editar`}
+                    className="btn btn-secondary"
+                    style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  >
+                    Editar
+                  </a>
+                  <button
+                    onClick={() => deleteLink(link.id)}
+                    className="btn btn-danger"
+                    style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  >
+                    Apagar
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div style={{ marginTop: 16 }}>
@@ -154,4 +156,4 @@ export default function JogadorDetalhePage() {
       </div>
     </div>
   )
-    }
+              }
