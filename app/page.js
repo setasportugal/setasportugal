@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import StatCard from '@/components/ui/StatCard'
 
 export default function Home() {
   return (
@@ -14,54 +15,45 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid-2">
+      <div className="grid-4">
 
-        <Link href="/jogadores" className="card-ui">
+        <StatCard
+          icon="👤"
+          title="Jogadores"
+          value="0"
+          subtitle="Registados"
+          href="/jogadores"
+        />
 
-          <h2>👤 Jogadores</h2>
+        <StatCard
+          icon="🛡️"
+          title="Equipas"
+          value="0"
+          subtitle="Registadas"
+          href="/equipas"
+        />
 
-          <p>
-            Consulta, cria e gere todos os jogadores.
-          </p>
+        <StatCard
+          icon="🏛️"
+          title="Associações"
+          value="0"
+          subtitle="Oficiais"
+          href="/associacoes"
+        />
 
-        </Link>
-
-        <Link href="/equipas" className="card-ui">
-
-          <h2>🛡️ Equipas</h2>
-
-          <p>
-            Gere equipas, clubes, cafés e associações recreativas.
-          </p>
-
-        </Link>
-
-        <Link href="/associacoes" className="card-ui">
-
-          <h2>🏛️ Associações</h2>
-
-          <p>
-            Organizações responsáveis pelas competições oficiais.
-          </p>
-
-        </Link>
-
-        <Link href="/competicoes" className="card-ui">
-
-          <h2>🏆 Competições</h2>
-
-          <p>
-            Campeonatos, Taças, Opens e restantes provas.
-          </p>
-
-        </Link>
+        <StatCard
+          icon="🤝"
+          title="Ligações"
+          value="0"
+          subtitle="Jogador ⇄ Equipa"
+        />
 
       </div>
 
       <div
         className="card-ui"
         style={{
-          marginTop:24
+          marginTop: 30
         }}
       >
 
@@ -69,9 +61,9 @@ export default function Home() {
 
         <div
           style={{
-            display:'grid',
-            gap:12,
-            marginTop:18
+            display: 'grid',
+            gap: 12,
+            marginTop: 20
           }}
         >
 
@@ -87,11 +79,29 @@ export default function Home() {
             ➕ Nova Associação
           </Link>
 
-          <Link href="/competicoes/nova">
-            ➕ Nova Competição
-          </Link>
-
         </div>
+
+      </div>
+
+      <div
+        className="card-ui"
+        style={{
+          marginTop: 30
+        }}
+      >
+
+        <h2>Estado da Base de Dados</h2>
+
+        <p
+          style={{
+            marginTop: 15,
+            color: 'var(--text-muted)'
+          }}
+        >
+          Esta plataforma está atualmente preparada para gerir jogadores,
+          equipas e associações. Nas próximas versões serão adicionadas
+          competições, épocas, jornadas, jogos, estatísticas e rankings.
+        </p>
 
       </div>
 
