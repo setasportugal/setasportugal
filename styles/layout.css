@@ -85,3 +85,78 @@ select{
     padding-right:20px;
   }
 }
+.grid-4{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+.stat-card{
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:24px;
+
+    transition:.2s;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:var(--shadow);
+
+}
+
+.stat-card-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+
+}
+
+.stat-card-icon{
+
+    font-size:34px;
+
+}
+
+.stat-card-value{
+
+    font-size:34px;
+
+    font-weight:700;
+
+}
+
+.stat-card h3{
+
+    margin:0;
+
+}
+
+.stat-card p{
+
+    margin-top:8px;
+
+    color:var(--text-muted);
+
+    font-size:.9rem;
+
+}
