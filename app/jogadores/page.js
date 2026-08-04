@@ -307,22 +307,13 @@ export default function JogadoresPage() {
 
           </div>
 
-                )}
+                        )}
 
       </div>
 
     </div>
   )
 }
-
-        <Link
-          href="/"
-          className="btn btn-secondary"
-        >
-          ← Voltar ao início
-        </Link>
-
-      </div>
 
     </div>
   )
