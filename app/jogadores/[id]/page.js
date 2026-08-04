@@ -85,12 +85,19 @@ export default function JogadorDetalhePage() {
   }
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <div
+  style={{
+    marginTop: 24,
+    display: 'grid',
+    gap: 24
+  }}
+>
 
       <div
         className="card"
         style={{
-          padding: 24
+          padding: 24,
+          borderRadius: 18
         }}
       >
 
@@ -108,7 +115,10 @@ export default function JogadorDetalhePage() {
 
             <h1
               style={{
-                margin: 0
+                margin: 0,
+                fontSize: '2.2rem',
+                fontWeight: 700,
+                lineHeight: 1.1
               }}
             >
               👤 {player.name}
@@ -117,9 +127,9 @@ export default function JogadorDetalhePage() {
             {player.nickname && (
               <p
                 style={{
-                  color: '#64748b',
-                  marginTop: 6,
-                  fontSize: '1.1rem'
+                  marginTop: 16,
+                  color: '#475569',
+                  fontSize: '.95rem'
                 }}
               >
                 "{player.nickname}"
