@@ -314,7 +314,3 @@ export default function JogadoresPage() {
     </div>
   )
 }
-
-    </div>
-  )
-}
