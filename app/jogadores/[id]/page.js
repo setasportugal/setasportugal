@@ -181,17 +181,29 @@ export default function JogadorDetalhePage() {
 
         </div>
         <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '2fr 1fr',
-            gap: 24,
-            marginTop: 30
-          }}
-        >
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0,2fr) minmax(320px,1fr)',
+    gap: 24,
+    marginTop: 30,
+    alignItems: 'start'
+  }}
+>
 
-          <div className="card">
+          <div
+  className="card"
+  style={{
+    padding: 28
+  }}
+>
 
-            <h2>Informação</h2>
+  <h2
+    style={{
+      marginBottom: 24
+    }}
+  >
+    Informação do Jogador
+  </h2>
 
             <div
               style={{
@@ -240,10 +252,22 @@ export default function JogadorDetalhePage() {
 
           </div>
 
-          <div className="card">
+          <div
+  className="card"
+  style={{
+    padding: 28,
+    position: 'sticky',
+    top: 20
+  }}
+>
 
-            <h2>Equipa Atual</h2>
-
+  <h2
+    style={{
+      marginBottom: 24
+    }}
+  >
+    Equipa Atual
+  </h2>
             <div
               style={{
                 marginTop: 20
