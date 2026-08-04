@@ -4,327 +4,315 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 
+import PageHeader from '../../../components/ui/PageHeader'
+import Card from '../../../components/ui/Card'
+import FormSection from '../../../components/ui/FormSection'
+import Input from '../../../components/ui/Input'
+import Textarea from '../../../components/ui/Textarea'
+import Button from '../../../components/ui/Button'
+
 export default function NovaAssociacaoPage() {
+
   const router = useRouter()
 
-  const [saving, setSaving] = useState(false)
+  const [saving,setSaving] = useState(false)
 
-  const [form, setForm] = useState({
-    name: '',
-    short_name: '',
-    region: '',
-    founded_year: '',
-    website: '',
-    facebook: '',
-    instagram: '',
-    notes: ''
+  const [form,setForm] = useState({
+
+    name:'',
+    short_name:'',
+    region:'',
+    founded_year:'',
+    website:'',
+    facebook:'',
+    instagram:'',
+    notes:''
+
   })
 
-  function update(field, value) {
-    setForm(prev => ({
+  function update(field,value){
+
+    setForm(prev=>({
+
       ...prev,
-      [field]: value
+      [field]:value
+
     }))
+
   }
 
-  async function handleSubmit(e) {
+  async function save(e){
+
     e.preventDefault()
 
-    if (!form.name.trim()) {
-      alert('O nome da associação é obrigatório.')
+    if(!form.name.trim()){
+
+      alert('Indica o nome da associação.')
+
       return
+
     }
 
     setSaving(true)
 
-    const { error } = await supabase
+    const {error} = await supabase
+
       .from('associations')
+
       .insert({
-        name: form.name.trim(),
-        short_name: form.short_name || null,
-        region: form.region || null,
-        founded_year: form.founded_year
-          ? Number(form.founded_year)
-          : null,
-        website: form.website || null,
-        facebook: form.facebook || null,
-        instagram: form.instagram || null,
-        notes: form.notes || null
+
+        name:form.name,
+        short_name:form.short_name || null,
+        region:form.region || null,
+        founded_year:form.founded_year || null,
+        website:form.website || null,
+        facebook:form.facebook || null,
+        instagram:form.instagram || null,
+        notes:form.notes || null
+
       })
 
     setSaving(false)
 
-    if (error) {
+    if(error){
+
       alert(error.message)
+
       return
+
     }
 
     router.push('/associacoes')
+
   }
 
-  return (
-    <div
-      style={{
-        maxWidth: 900,
-        margin: '32px auto'
-      }}
-    >
-      <div
-        style={{
-          marginBottom: 28
-        }}
-      >
-        <h1
-          style={{
-            marginBottom: 8,
-            fontSize: '2rem'
-          }}
-        >
-          🏛️ Nova Associação
-        </h1>
+  return(
 
-        <p
-          style={{
-            color: '#64748b',
-            lineHeight: 1.6,
-            maxWidth: 700
-          }}
-        >
-          Regista uma associação regional responsável pela organização
-          de competições oficiais de setas em Portugal.
-        </p>
-      </div>
+    <>
 
-      <form onSubmit={handleSubmit}>
+<PageHeader
 
-        <div
-          className="card"
-          style={{
-            padding: 24,
-            marginBottom: 20
-          }}
-        >
-          <h3
-            style={{
-              marginBottom: 20
-            }}
-          >
-            Identificação
-          </h3>
+icon="🏛️"
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '2fr 1fr',
-              gap: 20
-            }}
-          >
+title="Nova Associação"
 
-            <div>
-              <label>
-                Nome da Associação *
-              </label>
+description="Regista uma associação organizadora de competições de setas."
 
-              <input
-                className="search"
-                type="text"
-                placeholder="Ex.: Associação Portuguesa de Setas"
-                value={form.name}
-                onChange={e => update('name', e.target.value)}
-              />
-            </div>
+/>
 
-            <div>
-              <label>
-                Sigla
-              </label>
+<form onSubmit={save}>
 
-              <input
-                className="search"
-                type="text"
-                placeholder="APA"
-                value={form.short_name}
-                onChange={e => update('short_name', e.target.value)}
-              />
-            </div>
+<Card>
 
-          </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: 20,
-              marginTop: 20
-            }}
-          >
+<FormSection
 
-            <div>
-              <label>
-                Região
-              </label>
+title="Identificação"
 
-              <input
-                className="search"
-                type="text"
-                placeholder="Ex.: Lisboa, Centro, Norte..."
-                value={form.region}
-                onChange={e => update('region', e.target.value)}
-              />
-            </div>
+description="Informação principal da associação."
 
-            <div>
-              <label>
-                Ano de fundação
-              </label>
+columns={2}
 
-              <input
-                className="search"
-                type="number"
-                placeholder="1998"
-                value={form.founded_year}
-                onChange={e => update('founded_year', e.target.value)}
-              />
-            </div>
+>
 
-          </div>
+<Input
 
-        </div>
+label="Nome"
 
-        <div
-          className="card"
-          style={{
-            padding: 24,
-            marginBottom: 20
-          }}
-        >
-          <h3
-            style={{
-              marginBottom: 20
-            }}
-          >
-            🌐 Presença Online
-          </h3>
+required
 
-          <div
-            style={{
-              display: 'grid',
-              gap: 18
-            }}
-          >
+placeholder="Associação Portuguesa de Setas"
 
-            <div>
-              <label>Website</label>
+value={form.name}
 
-              <input
-                className="search"
-                placeholder="https://..."
-                value={form.website}
-                onChange={e => update('website', e.target.value)}
-              />
-            </div>
+onChange={e=>update('name',e.target.value)}
 
-            <div>
-              <label>Facebook</label>
+/>
 
-              <input
-                className="search"
-                placeholder="https://facebook.com/..."
-                value={form.facebook}
-                onChange={e => update('facebook', e.target.value)}
-              />
-            </div>
+<Input
 
-            <div>
-              <label>Instagram</label>
+label="Sigla"
 
-              <input
-                className="search"
-                placeholder="https://instagram.com/..."
-                value={form.instagram}
-                onChange={e => update('instagram', e.target.value)}
-              />
-            </div>
+placeholder="APS"
 
-          </div>
+value={form.short_name}
 
-        </div>
+onChange={e=>update('short_name',e.target.value)}
 
-        <div
-          className="card"
-          style={{
-            padding: 24,
-            marginBottom: 24
-          }}
-        >
-          <h3
-            style={{
-              marginBottom: 18
-            }}
-          >
-            📝 Observações
-          </h3>
+/>
+<Input
 
-          <textarea
-            rows={8}
-            style={{
-              width: '100%',
-              padding: 14,
-              border: '1px solid #cbd5e1',
-              borderRadius: 10,
-              resize: 'vertical',
-              fontSize: '0.95rem'
-            }}
-            placeholder="Informação adicional sobre a associação..."
-            value={form.notes}
-            onChange={e => update('notes', e.target.value)}
-          />
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 16,
-            marginTop: 28,
-            flexWrap: 'wrap'
-          }}
-        >
-          <div
-            style={{
-              color: '#64748b',
-              fontSize: '0.9rem'
-            }}
-          >
-            Os campos assinalados com <strong>*</strong> são obrigatórios.
-          </div>
+label="Região"
 
-          <div
-            style={{
-              display: 'flex',
-              gap: 12
-            }}
-          >
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => router.push('/associacoes')}
-            >
-              Cancelar
-            </button>
+placeholder="Centro"
 
-            <button
-              type="submit"
-              className="btn"
-              disabled={saving}
-            >
-              {saving
-                ? 'A guardar...'
-                : '💾 Guardar Associação'}
-            </button>
-          </div>
-        </div>
+value={form.region}
 
-      </form>
-    </div>
+onChange={e=>update('region',e.target.value)}
+
+/>
+
+<Input
+
+label="Ano de fundação"
+
+type="number"
+
+placeholder="1998"
+
+value={form.founded_year}
+
+onChange={e=>update('founded_year',e.target.value)}
+
+/>
+
+</FormSection>
+
+</Card>
+
+<Card>
+
+<FormSection
+
+title="Presença Online"
+
+description="Todos os campos desta secção são opcionais."
+
+>
+
+<Input
+
+label="Website"
+
+placeholder="https://..."
+
+value={form.website}
+
+onChange={e=>update('website',e.target.value)}
+
+/>
+
+<Input
+
+label="Facebook"
+
+placeholder="https://facebook.com/..."
+
+value={form.facebook}
+
+onChange={e=>update('facebook',e.target.value)}
+
+/>
+
+<Input
+
+label="Instagram"
+
+placeholder="https://instagram.com/..."
+
+value={form.instagram}
+
+onChange={e=>update('instagram',e.target.value)}
+
+/>
+
+</FormSection>
+
+</Card>
+
+<Card>
+
+<FormSection
+
+title="Observações"
+
+description="Informação adicional que possa ser útil futuramente."
+
+>
+
+<Textarea
+
+label="Notas"
+
+rows={8}
+
+placeholder="Escreve aqui qualquer informação adicional..."
+
+value={form.notes}
+
+onChange={e=>update('notes',e.target.value)}
+
+/>
+
+</FormSection>
+
+</Card>
+<div className="actions">
+
+<Button
+
+variant="secondary"
+
+type="button"
+
+onClick={()=>router.push('/associacoes')}
+
+>
+
+Cancelar
+
+</Button>
+
+<Button
+
+type="submit"
+
+disabled={saving}
+
+>
+
+{saving ? 'A guardar...' : 'Guardar Associação'}
+
+</Button>
+
+</div>
+
+</form>
+
+<div
+  style={{
+    marginTop:40,
+    background:'#eff6ff',
+    border:'1px solid #bfdbfe',
+    borderRadius:12,
+    padding:20
+  }}
+>
+
+<h3
+  style={{
+    marginTop:0,
+    marginBottom:10,
+    color:'#1e3a8a'
+  }}
+>
+💡 Sugestão
+</h3>
+
+<p
+  style={{
+    margin:0,
+    color:'#334155',
+    lineHeight:1.7
+  }}
+>
+As redes sociais e o website podem ser adicionados mais tarde.
+O único campo obrigatório para criar uma associação é o <strong>Nome</strong>.
+</p>
+
+</div>
+
+</>
+
   )
+
 }
