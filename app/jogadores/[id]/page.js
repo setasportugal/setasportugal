@@ -131,12 +131,18 @@ export default function JogadorDetalhePage() {
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                   <a
-                    href={`/jogadores/\( {id}/historico/ \){link.id}/editar`}
-                    className="btn btn-secondary"
-                    style={{ padding: '6px 10px', fontSize: '0.8rem' }}
-                  >
-                    Editar
-                  </a>
+  href={
+    "/jogadores/" +
+    id +
+    "/historico/" +
+    link.id +
+    "/editar"
+  }
+  className="btn btn-secondary"
+  style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+>
+  Editar
+</a>
                   <button
                     onClick={() => deleteLink(link.id)}
                     className="btn btn-danger"
