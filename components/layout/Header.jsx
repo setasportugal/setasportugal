@@ -1,7 +1,5 @@
 'use client'
 
-import { Search, Bell, UserCircle } from 'lucide-react'
-
 export default function Header() {
   return (
     <header className="header">
@@ -9,45 +7,32 @@ export default function Header() {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 16,
-          flex: 1,
+          width: '100%',
           maxWidth: 500,
         }}
       >
-        <div
+        <input
+          type="search"
+          placeholder="Pesquisar jogadores, equipas, competições..."
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
             width: '100%',
-            background: 'var(--surface)',
+            padding: '10px 14px',
             border: '1px solid var(--border)',
             borderRadius: 10,
-            padding: '10px 14px',
+            outline: 'none',
+            background: 'var(--surface)',
           }}
-        >
-          <Search size={18} />
-          <input
-            type="text"
-            placeholder="Pesquisar jogadores, equipas, competições..."
-            style={{
-              border: 'none',
-              outline: 'none',
-              width: '100%',
-              background: 'transparent',
-            }}
-          />
-        </div>
+        />
       </div>
 
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 20,
+          gap: 12,
         }}
       >
-        <Bell size={20} />
+        <div style={{ fontSize: 22 }}>🔔</div>
 
         <div
           style={{
@@ -56,10 +41,17 @@ export default function Header() {
             gap: 10,
           }}
         >
-          <UserCircle size={34} />
+          <div style={{ fontSize: 30 }}>👤</div>
+
           <div>
             <strong>Administrador</strong>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+
+            <div
+              style={{
+                fontSize: 12,
+                color: 'var(--text-muted)',
+              }}
+            >
               Setas Portugal
             </div>
           </div>
