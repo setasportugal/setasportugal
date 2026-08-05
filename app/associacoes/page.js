@@ -291,8 +291,6 @@ export default function AssociacoesPage() {
 
           ))}
 
-          ))}
-
         </div>
 
       )}
