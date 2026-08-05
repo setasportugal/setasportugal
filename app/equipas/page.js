@@ -136,7 +136,6 @@ export default function EquipasPage() {
 
 
       {loading ? (
-              {loading ? (
 
         <div
           className="card"
