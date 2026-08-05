@@ -177,140 +177,97 @@ export default function JogadoresPage() {
 
           {filteredPlayers.map(player => (
 
-            <Link
-              key={player.id}
-              href={`/jogadores/${player.id}`}
+  <Link
+    key={player.id}
+    href={`/jogadores/${player.id}`}
+    style={{
+      textDecoration: 'none'
+    }}
+  >
+
+    <div
+      className="card"
+      style={{
+        padding: 22,
+        height: '100%'
+      }}
+    >
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16
+        }}
+      >
+
+        <div
+          style={{
+            width: 54,
+            height: 54,
+            borderRadius: '50%',
+            background: '#e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.5rem'
+          }}
+        >
+          👤
+        </div>
+
+        <div>
+
+          <h3
+            style={{
+              margin: 0,
+              color: '#0f172a'
+            }}
+          >
+            {player.name}
+          </h3>
+
+          {player.nickname && (
+            <div
               style={{
-                textDecoration: 'none'
+                marginTop: 4,
+                color: '#64748b'
               }}
             >
+              🏷️ {player.nickname}
+            </div>
+          )}
 
-              <div
-                className="card"
-                style={{
-                  padding: 22,
-                  height: '100%',
-                  transition: '0.2s'
-                }}
-              >
-
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 16
-                  }}
-                >
-
-                  <div
-                    style={{
-                      width: 54,
-                      height: 54,
-                      borderRadius: '50%',
-                      background: '#e2e8f0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.5rem'
-                    }}
-                  >
-                    👤
-                  </div>
-
-
-                  <div>
-
-                    <h3
-                      style={{
-                        margin: 0,
-                        color: '#0f172a'
-                      }}
-                    >
-                      {player.name}
-                    </h3>
-
-                    {player.nickname && (
-
-                      <div
-                        style={{
-                          marginTop: 4,
-                          color: '#64748b'
-                        }}
-                      >
-                        🏷️ {player.nickname}
-                      </div>
-
-                    )}
-
-                  </div>
-
-                </div>
-                  <div
-                    style={{
-                      marginTop: 20,
-                      display: 'grid',
-                      gap: 10
-                    }}
-                  >
-
-                    {player.city && (
-
-                      <div
-                        style={{
-                          color: '#64748b',
-                          fontSize: '.9rem'
-                        }}
-                      >
-                        📍 {player.city}
-                      </div>
-
-                    )}
-
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginTop: 8
-                      }}
-                    >
-
-                      <span
-                        style={{
-                          color: '#2563eb',
-                          fontWeight: 600,
-                          fontSize: '.9rem'
-                        }}
-                      >
-                        Ver perfil
-                      </span>
-
-
-                      <span
-                        style={{
-                          color: '#94a3b8'
-                        }}
-                      >
-                        →
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </Link>
-
-            ))}
-          </div>
-
-        )}
+        </div>
 
       </div>
 
+
+      {player.city && (
+        <div
+          style={{
+            marginTop: 20,
+            color: '#64748b'
+          }}
+        >
+          📍 {player.city}
+        </div>
+      )}
+
+
+      <div
+        style={{
+          marginTop: 20,
+          color: '#2563eb',
+          fontWeight: 600
+        }}
+      >
+        Ver perfil →
+      </div>
+
+
     </div>
-  )
-}
-          
+
+  </Link>
+
+))}
