@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../../lib/supabase'
 
 export default function NovaJornadaPage() {
-
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -17,11 +16,12 @@ export default function NovaJornadaPage() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    loadSeason()
-  }, [])
+    if (seasonId) {
+      loadSeason()
+    }
+  }, [seasonId])
 
   async function loadSeason() {
-
     const { data, error } = await supabase
       .from('seasons')
       .select(`
@@ -33,16 +33,15 @@ export default function NovaJornadaPage() {
 
     if (error) {
       alert(error.message)
+      setLoading(false)
       return
     }
 
     setSeason(data)
     setLoading(false)
-
   }
 
   async function createRounds() {
-
     if (!totalRounds || Number(totalRounds) < 1) {
       alert('Indique o número de jornadas.')
       return
@@ -50,17 +49,28 @@ export default function NovaJornadaPage() {
 
     setSaving(true)
 
+    // Verifica se já existem jornadas
+    const { data: existing } = await supabase
+      .from('rounds')
+      .select('id')
+      .eq('season_id', seasonId)
+
+    if (existing && existing.length > 0) {
+      alert('Esta época já possui jornadas.')
+      setSaving(false)
+      return
+    }
+
     const rows = []
 
     for (let i = 1; i <= Number(totalRounds); i++) {
-
       rows.push({
         season_id: seasonId,
         number: i
       })
-
     }
-        const { error } = await supabase
+
+    const { error } = await supabase
       .from('rounds')
       .insert(rows)
 
@@ -74,21 +84,17 @@ export default function NovaJornadaPage() {
     alert('Jornadas criadas com sucesso.')
 
     router.push(`/epocas/${seasonId}`)
-
   }
 
   if (loading) {
-
     return (
       <div className="card">
         A carregar...
       </div>
     )
-
   }
 
   return (
-
     <div
       className="card"
       style={{
@@ -97,25 +103,16 @@ export default function NovaJornadaPage() {
         padding: 30
       }}
     >
-
-      <h1>
-
-        📅 Criar Jornadas
-
-      </h1>
+      <h1>📅 Criar Jornadas</h1>
 
       <p
         style={{
           color: '#64748b'
         }}
       >
-
-        <strong>{season.competitions.name}</strong>
-
+        <strong>{season?.competitions?.name}</strong>
         <br />
-
-        {season.name}
-
+        {season?.name}
       </p>
 
       <div
@@ -123,12 +120,7 @@ export default function NovaJornadaPage() {
           marginTop: 30
         }}
       >
-
-        <label>
-
-          Número de jornadas
-
-        </label>
+        <label>Número de jornadas</label>
 
         <input
           type="number"
@@ -138,8 +130,8 @@ export default function NovaJornadaPage() {
           min="1"
           placeholder="Ex.: 22"
         />
-
       </div>
+
       <div
         style={{
           display: 'flex',
@@ -147,28 +139,22 @@ export default function NovaJornadaPage() {
           marginTop: 30
         }}
       >
-
         <button
           className="btn"
           onClick={createRounds}
           disabled={saving}
         >
-
           {saving
             ? 'A criar...'
             : '📅 Criar Jornadas'}
-
         </button>
 
         <button
           className="btn btn-secondary"
           onClick={() => router.back()}
         >
-
           Cancelar
-
         </button>
-
       </div>
 
       <div
@@ -179,7 +165,6 @@ export default function NovaJornadaPage() {
           borderRadius: 10
         }}
       >
-
         <strong>Pré-visualização</strong>
 
         <div
@@ -188,16 +173,11 @@ export default function NovaJornadaPage() {
             color: '#94a3b8'
           }}
         >
-
           {totalRounds
             ? `Serão criadas ${totalRounds} jornadas numeradas de 1 a ${totalRounds}.`
             : 'Introduza o número de jornadas para visualizar a pré-visualização.'}
-
         </div>
-
       </div>
     </div>
-
   )
-
 }
