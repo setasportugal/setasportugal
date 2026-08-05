@@ -268,6 +268,15 @@ export default function JogadoresPage() {
 
     </div>
 
-  </Link>
+            </Link>
 
-))}
+        ))}
+
+      </div>
+
+    )}
+
+  </div>
+
+)
+}
