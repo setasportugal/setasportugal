@@ -183,12 +183,12 @@ export default function CompeticaoDetalhePage() {
 
           <h2>📅 Épocas</h2>
 
-          <Link
-            href={`/competicoes/${id}/epocas/nova`}
-            className="btn"
-          >
-            ➕ Nova Época
-          </Link>
+<Link
+  href="/epocas/nova"
+  className="btn"
+>
+  ➕ Nova Época
+</Link>
 
         </div>
         {seasons.length === 0 ? (
