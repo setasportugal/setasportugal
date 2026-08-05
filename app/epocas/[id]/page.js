@@ -117,7 +117,7 @@ export default function EpocaPage() {
           </Link>
 
           <Link
-            href={`/jornadas/nova?season=${id}`}
+            href={`/jornadas/nova/${id}`}
             style={{
               textDecoration: 'none'
             }}
