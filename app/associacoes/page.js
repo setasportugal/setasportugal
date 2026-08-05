@@ -291,11 +291,10 @@ export default function AssociacoesPage() {
 
           ))}
 
+          ))}
+
         </div>
 
-      )}
-
-    </div>
       )}
 
     </div>
