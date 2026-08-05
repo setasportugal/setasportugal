@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { supabase } from '../../lib/supabase'
 
 export default function AssociacoesPage() {
@@ -12,6 +13,7 @@ export default function AssociacoesPage() {
     loadAssociations()
   }, [])
 
+
   async function loadAssociations() {
     setLoading(true)
 
@@ -20,98 +22,295 @@ export default function AssociacoesPage() {
       .select('*')
       .order('name')
 
+
     if (error) {
       console.error(error)
-      alert('Erro ao carregar associações: ' + error.message)
+
+      alert(
+        'Erro ao carregar associações: ' +
+        error.message
+      )
+
     } else {
+
       setAssociations(data || [])
+
     }
+
 
     setLoading(false)
   }
 
-  const filtered = associations.filter(a => {
-    const q = search.toLowerCase()
 
-    return (
-      a.name?.toLowerCase().includes(q) ||
-      a.short_name?.toLowerCase().includes(q) ||
-      a.region?.toLowerCase().includes(q)
-    )
-  })
+  const filteredAssociations = associations.filter(
+    association => {
+
+      const query = search.toLowerCase()
+
+      return (
+        association.name
+          ?.toLowerCase()
+          .includes(query) ||
+        association.short_name
+          ?.toLowerCase()
+          .includes(query) ||
+        association.region
+          ?.toLowerCase()
+          .includes(query)
+      )
+
+    }
+  )
+
 
   return (
-    <div style={{ marginTop: 16 }}>
+
+    <div
+      style={{
+        marginTop: 24,
+        display: 'grid',
+        gap: 24
+      }}
+    >
+
       <div
+        className="card"
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 16
+          padding: 28
         }}
       >
-        <h2>Associações</h2>
 
-        <a href="/associacoes/nova" className="btn">
-          + Nova
-        </a>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 20,
+            flexWrap: 'wrap'
+          }}
+        >
+
+          <div>
+
+            <h1
+              style={{
+                margin: 0,
+                fontSize: '2.4rem',
+                fontWeight: 800
+              }}
+            >
+              🏛️ Associações
+            </h1>
+
+
+            <p
+              style={{
+                marginTop: 8,
+                color: '#64748b'
+              }}
+            >
+              Entidades oficiais registadas na plataforma.
+            </p>
+
+          </div>
+
+
+          <Link
+            href="/associacoes/nova"
+            className="btn"
+          >
+            ➕ Nova Associação
+          </Link>
+
+        </div>
+
+
+        <div
+          style={{
+            marginTop: 28
+          }}
+        >
+
+          <input
+            className="search"
+            type="search"
+            placeholder="🔍 Pesquisar por nome, sigla ou região..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              width: '100%'
+            }}
+          />
+
+        </div>
+
       </div>
-
-      <input
-        className="search"
-        type="search"
-        placeholder="Pesquisar por nome, sigla ou região..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
-
       {loading ? (
-        <p className="empty">A carregar...</p>
-      ) : filtered.length === 0 ? (
-        <p className="empty">
+
+        <div
+          className="card"
+          style={{
+            padding: 30,
+            textAlign: 'center'
+          }}
+        >
+          A carregar associações...
+        </div>
+
+
+      ) : filteredAssociations.length === 0 ? (
+
+        <div
+          className="card"
+          style={{
+            padding: 30,
+            textAlign: 'center',
+            color: '#64748b'
+          }}
+        >
+
           {search
             ? 'Nenhuma associação encontrada.'
-            : 'Ainda não existem associações.'}
-        </p>
+            : 'Ainda não existem associações registadas.'}
+
+        </div>
+
+
       ) : (
-        <div className="card">
-          {filtered.map(association => (
-            <a
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'repeat(auto-fill,minmax(280px,1fr))',
+            gap: 18
+          }}
+        >
+
+          {filteredAssociations.map(association => (
+
+            <Link
               key={association.id}
               href={`/associacoes/${association.id}`}
-              className="list-item"
+              style={{
+                textDecoration: 'none'
+              }}
             >
-              <div>
-                <strong>{association.name}</strong>
 
-                {association.short_name && (
+              <div
+                className="card"
+                style={{
+                  padding: 24,
+                  height: '100%'
+                }}
+              >
+
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 16
+                  }}
+                >
+
                   <div
                     style={{
-                      fontSize: '0.85rem',
-                      color: '#94a3b8'
+                      width: 58,
+                      height: 58,
+                      borderRadius: 14,
+                      background: '#e2e8f0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1.8rem'
                     }}
                   >
-                    {association.short_name}
+                    🏛️
                   </div>
-                )}
+
+
+                  <div>
+
+                    <h3
+                      style={{
+                        margin: 0,
+                        color: '#0f172a'
+                      }}
+                    >
+                      {association.name}
+                    </h3>
+
+
+                    {association.short_name && (
+
+                      <div
+                        style={{
+                          marginTop: 5,
+                          color: '#64748b'
+                        }}
+                      >
+                        {association.short_name}
+                      </div>
+
+                    )}
+
+                  </div>
+
+                </div>
+
 
                 {association.region && (
+
                   <div
                     style={{
-                      fontSize: '0.8rem',
-                      color: '#94a3b8'
+                      marginTop: 20,
+                      color: '#64748b',
+                      fontSize: '.9rem'
                     }}
                   >
                     📍 {association.region}
                   </div>
+
                 )}
+
+
+                <div
+                  style={{
+                    marginTop: 22,
+                    color: '#2563eb',
+                    fontWeight: 600
+                  }}
+                >
+                  Ver associação →
+                </div>
+
+
               </div>
 
-              <span style={{ color: '#94a3b8' }}>→</span>
-            </a>
+            </Link>
+
           ))}
+
         </div>
+
       )}
+
+    </div>
+      <div
+        style={{
+          marginTop: 0
+        }}
+      >
+
+        <Link
+          href="/"
+          className="btn btn-secondary"
+        >
+          ← Voltar ao início
+        </Link>
+
+      </div>
+
     </div>
   )
 }
