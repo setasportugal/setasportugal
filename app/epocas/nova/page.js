@@ -58,7 +58,7 @@ export default function NovaEpocaPage() {
       return
     }
 
-    router.push('/competicoes/' + competitionId)
+    router.push('/competicoes/')
   }
 
   return (
