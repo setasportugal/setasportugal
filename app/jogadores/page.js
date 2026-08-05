@@ -304,13 +304,13 @@ export default function JogadoresPage() {
               </Link>
 
             ))}
-
           </div>
 
-                        )}
+        )}
 
       </div>
 
     </div>
   )
 }
+          
