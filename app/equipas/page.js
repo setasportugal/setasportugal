@@ -286,20 +286,7 @@ export default function EquipasPage() {
       )}
 
     </div>
-     <div
-        style={{
-          marginTop: 0
-        }}
-      >
-
-        <Link
-          href="/"
-          className="btn btn-secondary"
-        >
-          ← Voltar ao início
-        </Link>
-
-      </div>
+     )}
 
     </div>
   )
