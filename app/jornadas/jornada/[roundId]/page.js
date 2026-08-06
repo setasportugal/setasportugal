@@ -10,6 +10,8 @@ export default function JornadaPage() {
   const { roundId } = useParams()
 
   const [round, setRound] = useState(null)
+  const [season, setSeason] = useState(null)
+  const [competition, setCompetition] = useState(null)
   const [matches, setMatches] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -19,34 +21,50 @@ export default function JornadaPage() {
 
   async function loadData() {
 
-    const { data: roundData, error } = await supabase
+    const { data: roundData, error: roundError } = await supabase
       .from('rounds')
-      .select(`
-        *,
-        seasons(
-          *,
-          competitions(*)
-        )
-      `)
+      .select('*')
       .eq('id', roundId)
       .single()
 
-    if (error) {
-      alert(error.message)
+    if (roundError) {
+      alert(roundError.message)
+      setLoading(false)
+      return
+    }
+
+    const { data: seasonData, error: seasonError } = await supabase
+      .from('seasons')
+      .select('*')
+      .eq('id', roundData.season_id)
+      .single()
+
+    if (seasonError) {
+      alert(seasonError.message)
+      setLoading(false)
+      return
+    }
+
+    const { data: competitionData, error: competitionError } = await supabase
+      .from('competitions')
+      .select('*')
+      .eq('id', seasonData.competition_id)
+      .single()
+
+    if (competitionError) {
+      alert(competitionError.message)
       setLoading(false)
       return
     }
 
     const { data: matchesData } = await supabase
       .from('matches')
-      .select(`
-        *,
-        player1:players!matches_player1_id_fkey(name),
-        player2:players!matches_player2_id_fkey(name)
-      `)
+      .select('*')
       .eq('round_id', roundId)
 
     setRound(roundData)
+    setSeason(seasonData)
+    setCompetition(competitionData)
     setMatches(matchesData || [])
 
     setLoading(false)
@@ -75,9 +93,7 @@ export default function JornadaPage() {
     >
 
       <h1>
-
         📅 Jornada {round.number}
-
       </h1>
 
       <p
@@ -87,15 +103,11 @@ export default function JornadaPage() {
         }}
       >
 
-        <strong>
-
-          {round.seasons.competitions.name}
-
-        </strong>
+        <strong>{competition.name}</strong>
 
         <br />
 
-        {round.seasons.name}
+        {season.name}
 
       </p>
       {matches.length === 0 ? (
@@ -149,11 +161,7 @@ export default function JornadaPage() {
                     margin: 0
                   }}
                 >
-                  {match.player1?.name || '---'}
-
-                  {'  vs  '}
-
-                  {match.player2?.name || '---'}
+                  Jogo
                 </h3>
 
                 <p
@@ -162,6 +170,10 @@ export default function JornadaPage() {
                     color: '#64748b'
                   }}
                 >
+                  Resultado:
+
+                  {' '}
+
                   {match.player1_score}
 
                   {' - '}
@@ -223,7 +235,7 @@ export default function JornadaPage() {
       >
 
         <Link
-          href={`/jornadas/${round.season_id}`}
+          href={`/jornadas/${season.id}`}
           className="btn btn-secondary"
         >
           ← Voltar às Jornadas
