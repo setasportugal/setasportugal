@@ -19,26 +19,30 @@ export default function JornadasPage() {
   }, [])
 
   async function loadData() {
-
-    const { data: seasonData, error } = await supabase
+        const { data: seasonData, error: seasonError } = await supabase
       .from('seasons')
       .select('*')
       .eq('id', seasonId)
       .single()
 
-    if (error) {
-      alert(error.message)
+    if (seasonError) {
+      alert(seasonError.message)
       setLoading(false)
       return
     }
 
-    const { data: competitionData } = await supabase
+    const { data: competitionData, error: competitionError } = await supabase
       .from('competitions')
       .select('*')
       .eq('id', seasonData.competition_id)
       .single()
 
-    const { data: roundsData } = await supabase
+    if (competitionError) {
+      alert(competitionError.message)
+      setLoading(false)
+      return
+    }
+        const { data: roundsData } = await supabase
       .from('rounds')
       .select('*')
       .eq('season_id', seasonId)
@@ -63,8 +67,7 @@ export default function JornadasPage() {
   }
 
   return (
-
-    <div
+        <div
       className="card"
       style={{
         maxWidth: 900,
@@ -89,9 +92,9 @@ export default function JornadasPage() {
         {season?.name}
 
       </p>
-      {rounds.length === 0 ? (
 
-        <div>
+      {rounds.length === 0 ? (
+                <div>
 
           <p
             style={{
@@ -119,8 +122,7 @@ export default function JornadasPage() {
             gap: 16
           }}
         >
-
-          {rounds.map(round => (
+                  {rounds.map(round => (
 
             <div
               key={round.id}
@@ -153,7 +155,6 @@ export default function JornadasPage() {
                 </p>
 
               </div>
-
               <div
                 style={{
                   display: 'flex',
@@ -167,6 +168,7 @@ export default function JornadasPage() {
                 >
                   ⚽ Jogos
                 </Link>
+
                 <Link
                   href={`/jornadas/${round.id}/editar`}
                   className="btn btn-secondary"
@@ -179,7 +181,6 @@ export default function JornadasPage() {
             </div>
 
           ))}
-
         </div>
 
       )}
