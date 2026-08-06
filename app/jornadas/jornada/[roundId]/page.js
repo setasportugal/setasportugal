@@ -96,7 +96,7 @@ export default function JornadaPage() {
     >
 
       <h1>
-        📅 Jornada {round.number}
+        📅 Jornada {round?.number}
       </h1>
 
       <p
@@ -106,11 +106,11 @@ export default function JornadaPage() {
         }}
       >
 
-        <strong>{competition.name}</strong>
+<strong>{competition?.name || 'Sem competição'}</strong>
 
-        <br />
+<br />
 
-        {season.name}
+{season?.name || 'Sem época'}
 
       </p>
       {matches.length === 0 ? (
