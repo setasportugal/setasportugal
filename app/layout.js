@@ -1,5 +1,6 @@
 import './globals.css'
 import MainLayout from '../components/layout/MainLayout'
+import AuthGuard from '../components/AuthGuard'
 
 export const metadata = {
   title: 'Setas Portugal',
@@ -10,9 +11,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt">
       <body>
-        <MainLayout>
-          {children}
-        </MainLayout>
+        <AuthGuard>
+          <MainLayout>
+            {children}
+          </MainLayout>
+        </AuthGuard>
       </body>
     </html>
   )
