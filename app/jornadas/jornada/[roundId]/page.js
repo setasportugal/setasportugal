@@ -28,7 +28,8 @@ export default function JornadaPage() {
       .single()
 
     if (roundError) {
-      alert(roundError.message)
+      console.log(roundError)
+      alert('ERRO ROUNDS: ' + roundError.message)
       setLoading(false)
       return
     }
@@ -40,7 +41,8 @@ export default function JornadaPage() {
       .single()
 
     if (seasonError) {
-      alert(seasonError.message)
+      console.log(seasonError)
+      alert('ERRO SEASON: ' + seasonError.message)
       setLoading(false)
       return
     }
@@ -52,7 +54,8 @@ export default function JornadaPage() {
       .single()
 
     if (competitionError) {
-      alert(competitionError.message)
+      console.log(competitionError)
+      alert('ERRO COMPETITION: ' + competitionError.message)
       setLoading(false)
       return
     }
