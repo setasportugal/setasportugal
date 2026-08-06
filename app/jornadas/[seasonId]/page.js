@@ -19,37 +19,37 @@ export default function JornadasPage() {
   }, [])
 
   async function loadData() {
-        const { data: seasonData, error: seasonError } = await supabase
+
+    const { data, error } = await supabase
       .from('seasons')
-      .select('*')
+      .select(`
+        *,
+        competitions(*)
+      `)
       .eq('id', seasonId)
       .single()
 
-    if (seasonError) {
-      alert(seasonError.message)
+    if (error) {
+      alert(error.message)
       setLoading(false)
       return
     }
 
-    const { data: competitionData, error: competitionError } = await supabase
-      .from('competitions')
-      .select('*')
-      .eq('id', seasonData.competition_id)
-      .single()
+    setSeason(data)
+    setCompetition(data.competitions)
 
-    if (competitionError) {
-      alert(competitionError.message)
-      setLoading(false)
-      return
-    }
-        const { data: roundsData } = await supabase
+    const { data: roundsData, error: roundsError } = await supabase
       .from('rounds')
       .select('*')
       .eq('season_id', seasonId)
       .order('number')
 
-    setSeason(seasonData)
-    setCompetition(competitionData)
+    if (roundsError) {
+      alert(roundsError.message)
+      setLoading(false)
+      return
+    }
+
     setRounds(roundsData || [])
 
     setLoading(false)
@@ -67,7 +67,8 @@ export default function JornadasPage() {
   }
 
   return (
-        <div
+
+    <div
       className="card"
       style={{
         maxWidth: 900,
@@ -85,16 +86,17 @@ export default function JornadasPage() {
         }}
       >
 
-        <strong>{competition?.name}</strong>
+        <strong>{competition.name}</strong>
 
         <br />
 
-        {season?.name}
+        {season.name}
 
       </p>
 
       {rounds.length === 0 ? (
-                <div>
+
+        <div>
 
           <p
             style={{
@@ -155,6 +157,7 @@ export default function JornadasPage() {
                 </p>
 
               </div>
+
               <div
                 style={{
                   display: 'flex',
@@ -169,18 +172,12 @@ export default function JornadasPage() {
                   ⚽ Jogos
                 </Link>
 
-                <Link
-                  href={`/jornadas/${round.id}/editar`}
-                  className="btn btn-secondary"
-                >
-                  ✏️ Editar
-                </Link>
-
               </div>
 
             </div>
 
           ))}
+
         </div>
 
       )}
