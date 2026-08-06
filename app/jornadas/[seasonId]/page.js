@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 
 export default function JornadasPage() {
 
   const { seasonId } = useParams()
-  const router = useRouter()
 
   const [season, setSeason] = useState(null)
   const [rounds, setRounds] = useState([])
@@ -69,136 +68,116 @@ export default function JornadasPage() {
       }}
     >
 
-      <div
+      <h1>📅 Jornadas</h1>
+
+      <p
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 30,
-          flexWrap: 'wrap',
-          gap: 20
+          color: '#64748b',
+          marginBottom: 30
         }}
       >
 
-        <div>
+        <strong>{season.competitions.name}</strong>
 
-          <h1>📅 Jornadas</h1>
+        <br />
+
+        {season.name}
+
+      </p>
+      {rounds.length === 0 ? (
+
+        <div>
 
           <p
             style={{
-              color: '#64748b'
+              color: '#64748b',
+              marginBottom: 20
             }}
           >
-
-            <strong>{season.competitions.name}</strong>
-
-            <br />
-
-            {season.name}
-
+            Ainda não existem jornadas para esta época.
           </p>
 
+          <Link
+            href={`/jornadas/nova/${seasonId}`}
+            className="btn"
+          >
+            ➕ Criar Jornadas
+          </Link>
+
         </div>
-        {rounds.length === 0 ? (
 
-          <div>
+      ) : (
 
-            <p
+        <div
+          style={{
+            display: 'grid',
+            gap: 16
+          }}
+        >
+
+          {rounds.map(round => (
+
+            <div
+              key={round.id}
+              className="card"
               style={{
-                color: '#64748b',
-                marginTop: 20
+                padding: 20,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
               }}
             >
-              Ainda não existem jornadas para esta época.
-            </p>
 
-            <Link
-              href={`/jornadas/nova/${seasonId}`}
-              className="btn"
-            >
-              ➕ Criar Jornadas
-            </Link>
+              <div>
 
-          </div>
-
-        ) : (
-
-          <div
-            style={{
-              display: 'grid',
-              gap: 14
-            }}
-          >
-
-            {rounds.map(round => (
-
-              <div
-                key={round.id}
-                className="card"
-                style={{
-                  padding: 20,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}
-              >
-
-                <div>
-
-                  <h3
-                    style={{
-                      margin: 0
-                    }}
-                  >
-                    📅 Jornada {round.number}
-                  </h3>
-
-                  <p
-                    style={{
-                      marginTop: 8,
-                      color: '#64748b'
-                    }}
-                  >
-
-                    {round.date
-                      ? round.date
-                      : 'Sem data definida'}
-
-                  </p>
-
-                </div>
-
-                <div
+                <h3
                   style={{
-                    display: 'flex',
-                    gap: 10
+                    margin: 0
                   }}
                 >
+                  📅 Jornada {round.number}
+                </h3>
 
-                  <Link
-                    href={`/jornadas/${round.id}`}
-                    className="btn"
-                  >
-                    Abrir
-                  </Link>
-                  <Link
-                    href={`/jornadas/${round.id}/editar`}
-                    className="btn btn-secondary"
-                  >
-                    Editar
-                  </Link>
-
-                </div>
+                <p
+                  style={{
+                    marginTop: 8,
+                    color: '#64748b'
+                  }}
+                >
+                  {round.date || 'Sem data'}
+                </p>
 
               </div>
 
-            ))}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 10
+                }}
+              >
 
-          </div>
+                <Link
+                  href={`/jornadas/${round.id}`}
+                  className="btn"
+                >
+                  ⚽ Jogos
+                </Link>
+                <Link
+                  href={`/jornadas/${round.id}/editar`}
+                  className="btn btn-secondary"
+                >
+                  ✏️ Editar
+                </Link>
 
-        )}
+              </div>
 
-      </div>
+            </div>
+
+          ))}
+
+        </div>
+
+      )}
 
       <div
         style={{
@@ -208,12 +187,12 @@ export default function JornadasPage() {
         }}
       >
 
-        <button
+        <Link
+          href={`/epocas/${seasonId}`}
           className="btn btn-secondary"
-          onClick={() => router.push(`/epocas/${seasonId}`)}
         >
           ← Voltar à Época
-        </button>
+        </Link>
 
       </div>
 
