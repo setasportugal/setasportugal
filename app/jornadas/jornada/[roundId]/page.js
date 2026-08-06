@@ -34,11 +34,14 @@ export default function JornadaPage() {
       return
     }
 
-    const { data: seasonData, error: seasonError } = await supabase
+    const seasonResult = await supabase
       .from('seasons')
       .select('*')
       .eq('id', roundData.season_id)
-      .single()
+
+console.log('SEASON RESULT', seasonResult)
+
+const { data: seasonData, error: seasonError } = seasonResult
 
     if (seasonError) {
       console.log(seasonError)
@@ -47,11 +50,14 @@ export default function JornadaPage() {
       return
     }
 
-    const { data: competitionData, error: competitionError } = await supabase
+    const competitionResult = await supabase
       .from('competitions')
       .select('*')
       .eq('id', seasonData.competition_id)
-      .single()
+
+console.log('COMP RESULT', competitionResult)
+
+const { data: competitionData, error: competitionError } = competitionResult
 
     if (competitionError) {
       console.log(competitionError)
