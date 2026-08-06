@@ -21,21 +21,21 @@ Funciona bem no telemóvel e no computador.
 2. Clica em **New query**.
 3. Copia **todo** o conteúdo do ficheiro `schema.sql` e cola na caixa.
 4. Clica em **Run** (ou Ctrl+Enter).
-5. Deves ver a mensagem de sucesso.
+5. Cria uma nova query, copia o conteúdo de `supabase/migrations/20260806215944_core_competitions.sql` e volta a clicar em **Run**.
 
-As tabelas `players`, `teams` e `team_players` ficam criadas.
+Ficam criadas as tabelas de jogadores, equipas, associações, competições, épocas, participantes, jornadas e jogos. A segunda query também ativa RLS e limita o acesso a utilizadores autenticados.
 
 ---
 
-## 3. Configurar autenticação (opcional mas recomendado)
+## 3. Configurar autenticação (obrigatório)
 
-Como as políticas RLS estão configuradas para utilizadores autenticados:
+As políticas RLS permitem acesso apenas a utilizadores autenticados:
 
 1. Vai a **Authentication → Providers**.
 2. Ativa o **Email** (já vem ativo por defeito).
 3. (Opcional) Desativa a confirmação de email em **Authentication → Providers → Email → Confirm email** se quiseres testar mais rápido.
 
-Para uso pessoal podes criar um único utilizador em **Authentication → Users → Add user**.
+Cria pelo menos um utilizador em **Authentication → Users → Add user**. Depois entra na aplicação pela página `/login`.
 
 ---
 
