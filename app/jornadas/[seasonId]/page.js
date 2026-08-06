@@ -10,6 +10,7 @@ export default function JornadasPage() {
   const { seasonId } = useParams()
 
   const [season, setSeason] = useState(null)
+  const [competition, setCompetition] = useState(null)
   const [rounds, setRounds] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -21,10 +22,7 @@ export default function JornadasPage() {
 
     const { data: seasonData, error } = await supabase
       .from('seasons')
-      .select(`
-        *,
-        competitions(*)
-      `)
+      .select('*')
       .eq('id', seasonId)
       .single()
 
@@ -34,6 +32,12 @@ export default function JornadasPage() {
       return
     }
 
+    const { data: competitionData } = await supabase
+      .from('competitions')
+      .select('*')
+      .eq('id', seasonData.competition_id)
+      .single()
+
     const { data: roundsData } = await supabase
       .from('rounds')
       .select('*')
@@ -41,6 +45,7 @@ export default function JornadasPage() {
       .order('number')
 
     setSeason(seasonData)
+    setCompetition(competitionData)
     setRounds(roundsData || [])
 
     setLoading(false)
@@ -77,11 +82,11 @@ export default function JornadasPage() {
         }}
       >
 
-        <strong>{season.competitions.name}</strong>
+        <strong>{competition?.name}</strong>
 
         <br />
 
-        {season.name}
+        {season?.name}
 
       </p>
       {rounds.length === 0 ? (
@@ -157,7 +162,7 @@ export default function JornadasPage() {
               >
 
                 <Link
-                  href={`/jornadas/${round.id}`}
+                  href={`/jornadas/jornada/${round.id}`}
                   className="btn"
                 >
                   ⚽ Jogos
