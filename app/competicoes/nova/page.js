@@ -9,6 +9,7 @@ export default function NovaCompeticaoPage() {
 
   const [name, setName] = useState('')
   const [type, setType] = useState('Campeonato')
+  const [competitionMode, setCompetitionMode] = useState('individual')
   const [associationId, setAssociationId] = useState('')
 
   const [associations, setAssociations] = useState([])
@@ -43,6 +44,7 @@ export default function NovaCompeticaoPage() {
       .insert({
         name,
         type,
+        competition_mode: competitionMode,
         association_id:
           associationId || null
       })
@@ -96,6 +98,21 @@ export default function NovaCompeticaoPage() {
             placeholder="Ex.: Liga ARCACEN"
             className="search"
           />
+
+        </div>
+
+        <div>
+
+          <label>Formato</label>
+
+          <select
+            value={competitionMode}
+            onChange={e => setCompetitionMode(e.target.value)}
+            className="search"
+          >
+            <option value="individual">Individual</option>
+            <option value="equipas">Por equipas</option>
+          </select>
 
         </div>
 
