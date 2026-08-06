@@ -28,48 +28,45 @@ export default function JornadaPage() {
       .single()
 
     if (roundError) {
-      console.log(roundError)
-      alert('ERRO ROUNDS: ' + roundError.message)
+      alert('Erro ao carregar a jornada: ' + roundError.message)
       setLoading(false)
       return
     }
 
-    const seasonResult = await supabase
+    const { data: seasonData, error: seasonError } = await supabase
       .from('seasons')
       .select('*')
       .eq('id', roundData.season_id)
-
-console.log('SEASON RESULT', seasonResult)
-
-const { data: seasonData, error: seasonError } = seasonResult
+      .single()
 
     if (seasonError) {
-      console.log(seasonError)
-      alert('ERRO SEASON: ' + seasonError.message)
+      alert('Erro ao carregar a época: ' + seasonError.message)
       setLoading(false)
       return
     }
 
-    const competitionResult = await supabase
+    const { data: competitionData, error: competitionError } = await supabase
       .from('competitions')
       .select('*')
       .eq('id', seasonData.competition_id)
-
-console.log('COMP RESULT', competitionResult)
-
-const { data: competitionData, error: competitionError } = competitionResult
+      .single()
 
     if (competitionError) {
-      console.log(competitionError)
-      alert('ERRO COMPETITION: ' + competitionError.message)
+      alert('Erro ao carregar a competição: ' + competitionError.message)
       setLoading(false)
       return
     }
 
-    const { data: matchesData } = await supabase
+    const { data: matchesData, error: matchesError } = await supabase
       .from('matches')
       .select('*')
       .eq('round_id', roundId)
+
+    if (matchesError) {
+      alert('Erro ao carregar os jogos: ' + matchesError.message)
+      setLoading(false)
+      return
+    }
 
     setRound(roundData)
     setSeason(seasonData)
