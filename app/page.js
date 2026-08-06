@@ -6,6 +6,8 @@ import LatestPlayers from '../components/dashboard/LatestPlayers'
 import { getDashboardStats } from '../lib/db/dashboard'
 import { getLatestPlayers } from '../lib/db/players'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const stats = await getDashboardStats()
   const latestPlayers = await getLatestPlayers()
