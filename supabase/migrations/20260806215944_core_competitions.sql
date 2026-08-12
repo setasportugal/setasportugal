@@ -82,6 +82,72 @@ create table if not exists public.matches (
   check (team1_id is distinct from team2_id)
 );
 
+-- Align deployments that already created the initial tables manually.
+alter table public.competitions
+  add column if not exists notes text,
+  add column if not exists updated_at timestamptz not null default now();
+
+update public.competitions
+set competition_mode = 'individual'
+where competition_mode is null;
+
+alter table public.competitions
+  alter column type set default 'Campeonato',
+  alter column type set not null,
+  alter column competition_mode set default 'individual',
+  alter column competition_mode set not null;
+
+alter table public.seasons
+  add column if not exists updated_at timestamptz not null default now();
+
+alter table public.seasons
+  alter column competition_id set not null,
+  alter column year set not null;
+
+alter table public.rounds
+  alter column season_id set not null;
+
+alter table public.matches
+  add column if not exists team1_id uuid references public.teams(id) on delete restrict,
+  add column if not exists team2_id uuid references public.teams(id) on delete restrict,
+  add column if not exists status text not null default 'scheduled'
+    check (status in ('scheduled', 'completed', 'cancelled')),
+  add column if not exists played_at timestamptz,
+  add column if not exists updated_at timestamptz not null default now();
+
+update public.matches
+set player1_score = 0
+where player1_score is null;
+
+update public.matches
+set player2_score = 0
+where player2_score is null;
+
+alter table public.matches
+  alter column round_id set not null,
+  alter column player1_score set default 0,
+  alter column player1_score set not null,
+  alter column player2_score set default 0,
+  alter column player2_score set not null;
+
+alter table public.season_participants
+  add constraint season_participants_exactly_one_participant
+  check (
+    (player_id is not null and team_id is null)
+    or (player_id is null and team_id is not null)
+  ) not valid;
+
+alter table public.matches
+  add constraint matches_exactly_one_participant_type
+  check (
+    (player1_id is not null and player2_id is not null and team1_id is null and team2_id is null)
+    or (player1_id is null and player2_id is null and team1_id is not null and team2_id is not null)
+  ) not valid,
+  add constraint matches_player_1_not_2
+  check (player1_id is distinct from player2_id) not valid,
+  add constraint matches_team_1_not_2
+  check (team1_id is distinct from team2_id) not valid;
+
 create unique index if not exists season_participants_player_unique
   on public.season_participants (season_id, player_id)
   where player_id is not null;
@@ -103,6 +169,7 @@ create index if not exists matches_round_id_idx on public.matches (round_id);
 create or replace function public.handle_updated_at()
 returns trigger
 language plpgsql
+set search_path = pg_catalog
 as $$
 begin
   new.updated_at = now();
