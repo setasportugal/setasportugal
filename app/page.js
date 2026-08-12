@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 import StatCard from '../components/ui/StatCard'
 import LatestPlayers from '../components/dashboard/LatestPlayers'
@@ -6,20 +9,39 @@ import LatestPlayers from '../components/dashboard/LatestPlayers'
 import { getDashboardStats } from '../lib/db/dashboard'
 import { getLatestPlayers } from '../lib/db/players'
 
-export const dynamic = 'force-dynamic'
+const emptyStats = {
+  players: 0,
+  teams: 0,
+  associations: 0,
+  teamPlayers: 0,
+}
 
-export default async function Home() {
-  const stats = await getDashboardStats()
-  const latestPlayers = await getLatestPlayers()
+export default function Home() {
+  const [stats, setStats] = useState(emptyStats)
+  const [latestPlayers, setLatestPlayers] = useState([])
+
+  useEffect(() => {
+    async function loadDashboard() {
+      const [dashboardStats, players] = await Promise.all([
+        getDashboardStats(),
+        getLatestPlayers(),
+      ])
+
+      setStats(dashboardStats)
+      setLatestPlayers(players)
+    }
+
+    loadDashboard()
+  }, [])
 
   return (
     <div>
       <div className="page-header">
         <div>
-          <h1>🎯 Setas Portugal</h1>
+          <h1>ðŸŽ¯ Setas Portugal</h1>
 
           <p>
-            Plataforma nacional para gestão, consulta e estatísticas das setas
+            Plataforma nacional para gestÃ£o, consulta e estatÃ­sticas das setas
             em Portugal.
           </p>
         </div>
@@ -27,7 +49,7 @@ export default async function Home() {
 
       <div className="grid-4">
         <StatCard
-          icon="👤"
+          icon="ðŸ‘¤"
           title="Jogadores"
           value={stats.players}
           subtitle="Registados"
@@ -35,7 +57,7 @@ export default async function Home() {
         />
 
         <StatCard
-          icon="🛡️"
+          icon="ðŸ›¡ï¸"
           title="Equipas"
           value={stats.teams}
           subtitle="Registadas"
@@ -43,18 +65,18 @@ export default async function Home() {
         />
 
         <StatCard
-          icon="🏛️"
-          title="Associações"
+          icon="ðŸ›ï¸"
+          title="AssociaÃ§Ãµes"
           value={stats.associations}
           subtitle="Oficiais"
           href="/associacoes"
         />
 
         <StatCard
-          icon="🤝"
-          title="Ligações"
+          icon="ðŸ¤"
+          title="LigaÃ§Ãµes"
           value={stats.teamPlayers}
-          subtitle="Jogador ⇄ Equipa"
+          subtitle="Jogador â‡„ Equipa"
         />
       </div>
 
@@ -69,7 +91,7 @@ export default async function Home() {
         <LatestPlayers players={latestPlayers} />
 
         <div className="card-ui">
-          <h2>Ações rápidas</h2>
+          <h2>AÃ§Ãµes rÃ¡pidas</h2>
 
           <div
             style={{
@@ -79,15 +101,15 @@ export default async function Home() {
             }}
           >
             <Link href="/jogadores/novo">
-              ➕ Novo Jogador
+              âž• Novo Jogador
             </Link>
 
             <Link href="/equipas/nova">
-              ➕ Nova Equipa
+              âž• Nova Equipa
             </Link>
 
             <Link href="/associacoes/nova">
-              ➕ Nova Associação
+              âž• Nova AssociaÃ§Ã£o
             </Link>
           </div>
         </div>
@@ -108,14 +130,15 @@ export default async function Home() {
             marginTop: 20,
           }}
         >
-          <div>🏆 Competições</div>
-          <div>📅 Épocas</div>
-          <div>🎯 Jogos</div>
-          <div>🤝 Transferências</div>
-          <div>📈 Rankings</div>
-          <div>📊 Estatísticas</div>
+          <div>ðŸ† CompetiÃ§Ãµes</div>
+          <div>ðŸ“… Ã‰pocas</div>
+          <div>ðŸŽ¯ Jogos</div>
+          <div>ðŸ¤ TransferÃªncias</div>
+          <div>ðŸ“ˆ Rankings</div>
+          <div>ðŸ“Š EstatÃ­sticas</div>
         </div>
       </div>
     </div>
   )
 }
+
