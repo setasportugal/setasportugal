@@ -40,7 +40,7 @@ export default function JornadaPage() {
       .single()
 
     if (seasonError) {
-      alert('Erro ao carregar a época: ' + seasonError.message)
+      alert('Erro ao carregar a Ã©poca: ' + seasonError.message)
       setLoading(false)
       return
     }
@@ -52,14 +52,20 @@ export default function JornadaPage() {
       .single()
 
     if (competitionError) {
-      alert('Erro ao carregar a competição: ' + competitionError.message)
+      alert('Erro ao carregar a competiÃ§Ã£o: ' + competitionError.message)
       setLoading(false)
       return
     }
 
     const { data: matchesData, error: matchesError } = await supabase
       .from('matches')
-      .select('*')
+      .select(`
+        *,
+        player1:players!matches_player1_id_fkey(name, nickname),
+        player2:players!matches_player2_id_fkey(name, nickname),
+        team1:teams!matches_team1_id_fkey(name),
+        team2:teams!matches_team2_id_fkey(name)
+      `)
       .eq('round_id', roundId)
 
     if (matchesError) {
@@ -99,7 +105,7 @@ export default function JornadaPage() {
     >
 
       <h1>
-        📅 Jornada {round?.number}
+        ðŸ“… Jornada {round?.number}
       </h1>
 
       <p
@@ -109,11 +115,11 @@ export default function JornadaPage() {
         }}
       >
 
-<strong>{competition?.name || 'Sem competição'}</strong>
+<strong>{competition?.name || 'Sem competiÃ§Ã£o'}</strong>
 
 <br />
 
-{season?.name || 'Sem época'}
+{season?.name || 'Sem Ã©poca'}
 
       </p>
       {matches.length === 0 ? (
@@ -126,14 +132,14 @@ export default function JornadaPage() {
               marginBottom: 20
             }}
           >
-            Ainda não existem jogos nesta jornada.
+            Ainda nÃ£o existem jogos nesta jornada.
           </p>
 
           <Link
             href={`/jogos/novo/${roundId}`}
             className="btn"
           >
-            ➕ Novo Jogo
+            âž• Novo Jogo
           </Link>
 
         </div>
@@ -167,7 +173,11 @@ export default function JornadaPage() {
                     margin: 0
                   }}
                 >
-                  Jogo
+                  {match.player1?.name || match.team1?.name || 'Participante'}
+
+                  {' vs '}
+
+                  {match.player2?.name || match.team2?.name || 'Participante'}
                 </h3>
 
                 <p
@@ -176,15 +186,11 @@ export default function JornadaPage() {
                     color: '#64748b'
                   }}
                 >
-                  Resultado:
-
-                  {' '}
-
-                  {match.player1_score}
-
-                  {' - '}
-
-                  {match.player2_score}
+                  {match.status === 'completed'
+                    ? `Resultado: ${match.player1_score} - ${match.player2_score}`
+                    : match.status === 'cancelled'
+                      ? 'Jogo cancelado'
+                      : 'Jogo agendado'}
                 </p>
 
               </div>
@@ -206,7 +212,7 @@ export default function JornadaPage() {
                   href={`/jogos/${match.id}/editar`}
                   className="btn btn-secondary"
                 >
-                  ✏️ Editar
+                  âœï¸ Editar
                 </Link>
 
               </div>
@@ -225,7 +231,7 @@ export default function JornadaPage() {
               href={`/jogos/novo/${roundId}`}
               className="btn"
             >
-              ➕ Novo Jogo
+              âž• Novo Jogo
             </Link>
 
           </div>
@@ -244,7 +250,7 @@ export default function JornadaPage() {
           href={`/jornadas/${season.id}`}
           className="btn btn-secondary"
         >
-          ← Voltar às Jornadas
+          â† Voltar Ã s Jornadas
         </Link>
 
       </div>
@@ -254,3 +260,4 @@ export default function JornadaPage() {
   )
 
 }
+
